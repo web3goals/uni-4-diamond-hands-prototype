@@ -16,3 +16,13 @@ sui client ptb \
 --transfer-objects "[sword]" to_address \
 --gas-budget 20000000
 ```
+
+```bash
+sui client call \
+--package 0xcb7d30a11bb0b9a4c2b3b8881da01d7c743c7427d4dabff9760f263a8723e308 \
+--module example \
+--function magic \
+--args 0x5bfc2ed0dbd51172c6041706564b1b6c1bfc0abb4a7902f9d8cc1d32b9e750e8
+```
+
+- Read object values - `sui client object 0x5bfc2ed0dbd51172c6041706564b1b6c1bfc0abb4a7902f9d8cc1d32b9e750e8`
