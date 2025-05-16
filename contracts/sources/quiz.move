@@ -4,9 +4,6 @@ use std::string;
 use sui::balance::{Self, Balance};
 use sui::coin::{Self, Coin};
 use sui::event;
-use sui::object::{Self, ID, UID};
-use sui::transfer;
-use sui::tx_context::{Self, TxContext};
 use sui::url::{Self, Url};
 
 public struct Quiz<phantom T> has key, store {
@@ -88,6 +85,7 @@ public fun update_description<T>(
     quiz.description = string::utf8(new_description)
 }
 
+#[allow(lint(self_transfer))]
 public fun burn<T>(quiz: Quiz<T>, ctx: &mut TxContext) {
     let Quiz { id, name: _, description: _, url: _, balance } = quiz;
     // If there are coins in the balance, we should return them to the transaction sender
@@ -107,8 +105,6 @@ public fun burn<T>(quiz: Quiz<T>, ctx: &mut TxContext) {
 fun test_mint_to_sender() {
     use sui::test_scenario;
     use sui::sui::SUI;
-    use sui::coin::{Self, Coin};
-    use sui::balance::Balance;
 
     // Create test address
     let admin = @0xABBA;
