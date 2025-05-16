@@ -21,16 +21,16 @@ public struct QuizMinted has copy, drop {
 
 // ===== Public view functions =====
 
-public fun name(nft: &Quiz): &string::String {
-    &nft.name
+public fun name(quiz: &Quiz): &string::String {
+    &quiz.name
 }
 
-public fun description(nft: &Quiz): &string::String {
-    &nft.description
+public fun description(quiz: &Quiz): &string::String {
+    &quiz.description
 }
 
-public fun url(nft: &Quiz): &Url {
-    &nft.url
+public fun url(quiz: &Quiz): &Url {
+    &quiz.url
 }
 
 // ===== Entrypoints =====
@@ -43,7 +43,7 @@ public fun mint_to_sender(
     ctx: &mut TxContext,
 ) {
     let sender = ctx.sender();
-    let nft = Quiz {
+    let quiz = Quiz {
         id: object::new(ctx),
         name: string::utf8(name),
         description: string::utf8(description),
@@ -51,24 +51,24 @@ public fun mint_to_sender(
     };
 
     event::emit(QuizMinted {
-        object_id: object::id(&nft),
+        object_id: object::id(&quiz),
         creator: sender,
-        name: nft.name,
+        name: quiz.name,
     });
 
-    transfer::public_transfer(nft, sender);
+    transfer::public_transfer(quiz, sender);
 }
 
-public fun transfer(nft: Quiz, recipient: address, _: &mut TxContext) {
-    transfer::public_transfer(nft, recipient)
+public fun transfer(quiz: Quiz, recipient: address, _: &mut TxContext) {
+    transfer::public_transfer(quiz, recipient)
 }
 
-public fun update_description(nft: &mut Quiz, new_description: vector<u8>, _: &mut TxContext) {
-    nft.description = string::utf8(new_description)
+public fun update_description(quiz: &mut Quiz, new_description: vector<u8>, _: &mut TxContext) {
+    quiz.description = string::utf8(new_description)
 }
 
-public fun burn(nft: Quiz, _: &mut TxContext) {
-    let Quiz { id, name: _, description: _, url: _ } = nft;
+public fun burn(quiz: Quiz, _: &mut TxContext) {
+    let Quiz { id, name: _, description: _, url: _ } = quiz;
     id.delete()
 }
 
@@ -83,9 +83,9 @@ fun test_mint_to_sender() {
     let mut scenario_val = test_scenario::begin(admin);
     let scenario = &mut scenario_val;
 
-    // Mint an NFT
+    // Mint a quiz
     let name = b"Test Quiz";
-    let description = b"This is a test quiz NFT";
+    let description = b"This is a test quiz";
     let url_bytes = b"https://example.com/test.png";
 
     // Execute the mint_to_sender function
@@ -99,19 +99,19 @@ fun test_mint_to_sender() {
         );
     };
 
-    // Verify the NFT was transferred to the sender
+    // Verify the quiz was transferred to the sender
     test_scenario::next_tx(scenario, admin);
     {
-        // Check if the sender received the NFT
-        let nft = test_scenario::take_from_sender<Quiz>(scenario);
+        // Check if the sender received the quiz
+        let quiz = test_scenario::take_from_sender<Quiz>(scenario);
 
-        // Verify NFT properties
-        assert!(std::string::as_bytes(name(& nft)) == name, 0);
-        assert!(std::string::as_bytes(description(& nft)) == description, 1);
+        // Verify quiz properties
+        assert!(std::string::as_bytes(name(& quiz)) == name, 0);
+        assert!(std::string::as_bytes(description(& quiz)) == description, 1);
         // We'll skip URL verification since url::inner_url() returns a type incompatible with vector<u8>
 
-        // Return the NFT to the object pool
-        test_scenario::return_to_sender(scenario, nft);
+        // Return the quiz to the object pool
+        test_scenario::return_to_sender(scenario, quiz);
     };
 
     test_scenario::end(scenario_val);
