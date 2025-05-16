@@ -1,7 +1,6 @@
 module contracts::uni;
 
-use sui::coin::{Self, TreasuryCap, Coin};
-use sui::test_scenario;
+use sui::coin::{Self, TreasuryCap};
 
 public struct UNI has drop {}
 
@@ -31,6 +30,9 @@ public fun mint(
 
 #[test]
 fun test_mint() {
+    use sui::test_scenario;
+    use sui::coin::Coin;
+
     // Create a test scenario with a dummy address as sender
     let admin = @0xA;
     let recipient = @0xB;
