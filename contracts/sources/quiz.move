@@ -75,4 +75,44 @@ public fun burn(nft: Quiz, _: &mut TxContext) {
 // ===== Tests =====
 
 #[test]
-fun test_mint_to_sender() {}
+fun test_mint_to_sender() {
+    use sui::test_scenario; // Create test address
+    let admin = @0xABBA;
+
+    // Create test scenario with admin as the sender
+    let mut scenario_val = test_scenario::begin(admin);
+    let scenario = &mut scenario_val;
+
+    // Mint an NFT
+    let name = b"Test Quiz";
+    let description = b"This is a test quiz NFT";
+    let url_bytes = b"https://example.com/test.png";
+
+    // Execute the mint_to_sender function
+    test_scenario::next_tx(scenario, admin);
+    {
+        mint_to_sender(
+            name,
+            description,
+            url_bytes,
+            test_scenario::ctx(scenario),
+        );
+    };
+
+    // Verify the NFT was transferred to the sender
+    test_scenario::next_tx(scenario, admin);
+    {
+        // Check if the sender received the NFT
+        let nft = test_scenario::take_from_sender<Quiz>(scenario);
+
+        // Verify NFT properties
+        assert!(std::string::as_bytes(name(& nft)) == name, 0);
+        assert!(std::string::as_bytes(description(& nft)) == description, 1);
+        // We'll skip URL verification since url::inner_url() returns a type incompatible with vector<u8>
+
+        // Return the NFT to the object pool
+        test_scenario::return_to_sender(scenario, nft);
+    };
+
+    test_scenario::end(scenario_val);
+}
