@@ -14,7 +14,17 @@ export default function PlaygroundPage() {
   const accounts = useAccounts();
   const account = accounts[0];
   const client = useSuiClient();
-  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction({
+    execute: async ({ bytes, signature }) =>
+      await client.executeTransactionBlock({
+        transactionBlock: bytes,
+        signature,
+        options: {
+          showRawEffects: true,
+          showObjectChanges: true,
+        },
+      }),
+  });
 
   async function getBalance() {
     try {
@@ -36,12 +46,15 @@ export default function PlaygroundPage() {
   async function getQuizzes() {
     try {
       console.log("Getting quizzes...");
+      // Define constants
+      const quizObjectStructType =
+        "0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::quiz::Quiz<0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::uni::UNI>";
+      // Get quizzes
       const quizzes = [];
       const objects = await client.getOwnedObjects({
         owner: account.address,
         filter: {
-          StructType:
-            "0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::quiz::Quiz<0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::uni::UNI>",
+          StructType: quizObjectStructType,
         },
       });
       for (const object of objects.data) {
@@ -63,6 +76,8 @@ export default function PlaygroundPage() {
     try {
       console.log("Splitting coins...");
       // Define constants
+      const uniCoinObjectType =
+        "0x2::coin::Coin<0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::uni::UNI>";
       const uniCoinObjectId =
         "0x1d02ab5132f092f82a422d77c30f225d23358633497b17ab1040e97ffa917938";
       // Prepare transaction
@@ -74,7 +89,15 @@ export default function PlaygroundPage() {
       signAndExecuteTransaction(
         { transaction: tx },
         {
-          onSuccess: (result) => console.log("Transaction result: ", result),
+          onSuccess: (result) => {
+            console.log("Transaction result: ", result);
+            const createdCoins = result.objectChanges?.filter(
+              (change) =>
+                change.type === "created" &&
+                change.objectType === uniCoinObjectType
+            );
+            console.log("Created coins: ", createdCoins);
+          },
           onError: (error) => handleError(error, "Failed, please try again"),
         }
       );
