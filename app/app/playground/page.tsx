@@ -33,6 +33,32 @@ export default function PlaygroundPage() {
     }
   }
 
+  async function getQuizzes() {
+    try {
+      console.log("Getting quizzes...");
+      const quizzes = [];
+      const objects = await client.getOwnedObjects({
+        owner: account.address,
+        filter: {
+          StructType:
+            "0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::quiz::Quiz<0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::uni::UNI>",
+        },
+      });
+      for (const object of objects.data) {
+        if (object.data?.objectId) {
+          const quiz = await client.getObject({
+            id: object.data?.objectId,
+            options: { showContent: true },
+          });
+          quizzes.push(quiz);
+        }
+      }
+      console.log("Quizzes: ", quizzes);
+    } catch (error) {
+      handleError(error, "Failed, please try again");
+    }
+  }
+
   async function splitCoins() {
     try {
       console.log("Splitting coins...");
@@ -133,6 +159,7 @@ export default function PlaygroundPage() {
         <Button onClick={splitCoins}>Split Coins</Button>
         <Button onClick={mintQuiz}>Mint Quiz</Button>
         <Button onClick={passQuiz}>Pass Quiz</Button>
+        <Button onClick={getQuizzes}>Get Quizzes</Button>
       </div>
     </main>
   );
