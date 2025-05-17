@@ -88,7 +88,38 @@ export default function PlaygroundPage() {
           onError: (error) => handleError(error, "Failed, please try again"),
         }
       );
-      console.log("Minting quiz...");
+    } catch (error) {
+      handleError(error, "Failed, please try again");
+    }
+  }
+
+  async function passQuiz() {
+    try {
+      console.log("Passing quiz...");
+      // Define constants
+      const quizObjectId =
+        "0xc1f642f38c3bda8265fa6e74c649640821cf838d9e3f7831dd1867b773263595";
+      const userAddress =
+        "0x90bbf7799fe30efda0e7c1a9f7bdc05a8e8ecfac69f4d4445f34ef26269e7baa";
+      // Prepare the transaction
+      const tx = new Transaction();
+      tx.moveCall({
+        target:
+          "0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::quiz::pass",
+        arguments: [tx.object(quizObjectId), tx.pure.address(userAddress)],
+        typeArguments: [
+          "0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::uni::UNI",
+        ],
+      });
+      tx.setGasBudget(5_000_000);
+      // Execute the transaction
+      signAndExecuteTransaction(
+        { transaction: tx },
+        {
+          onSuccess: (result) => console.log("Transaction result: ", result),
+          onError: (error) => handleError(error, "Failed, please try again"),
+        }
+      );
     } catch (error) {
       handleError(error, "Failed, please try again");
     }
@@ -101,6 +132,7 @@ export default function PlaygroundPage() {
         <Button onClick={getBalance}>Get Balance</Button>
         <Button onClick={splitCoins}>Split Coins</Button>
         <Button onClick={mintQuiz}>Mint Quiz</Button>
+        <Button onClick={passQuiz}>Pass Quiz</Button>
       </div>
     </main>
   );
