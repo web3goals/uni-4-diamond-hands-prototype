@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import useError from "@/hooks/use-error";
 import {
   useAccounts,
@@ -8,6 +9,7 @@ import {
   useSuiClient,
 } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
+import { GamepadIcon } from "lucide-react";
 
 export default function PlaygroundPage() {
   const { handleError } = useError();
@@ -175,14 +177,30 @@ export default function PlaygroundPage() {
   }
 
   return (
-    <main className="container mx-auto px-4 lg:px-80 py-16">
-      <p>Playground page...</p>
+    <main className="max-w-2xl mx-auto px-4 py-16">
+      <div className="flex items-center justify-center size-24 rounded-full bg-primary">
+        <GamepadIcon className="size-12 text-primary-foreground" />
+      </div>
+      <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mt-2">
+        Playground
+      </h1>
+      <Separator className="my-8" />
       <div className="flex flex-col items-start gap-4 mt-4">
-        <Button onClick={getBalance}>Get Balance</Button>
-        <Button onClick={splitCoins}>Split Coins</Button>
-        <Button onClick={mintQuiz}>Mint Quiz</Button>
-        <Button onClick={passQuiz}>Pass Quiz</Button>
-        <Button onClick={getQuizzes}>Get Quizzes</Button>
+        <Button variant="secondary" onClick={getBalance}>
+          Get Balance
+        </Button>
+        <Button variant="secondary" onClick={splitCoins}>
+          Split Coins
+        </Button>
+        <Button variant="secondary" onClick={mintQuiz}>
+          Mint Quiz
+        </Button>
+        <Button variant="secondary" onClick={passQuiz}>
+          Pass Quiz
+        </Button>
+        <Button variant="secondary" onClick={getQuizzes}>
+          Get Quizzes
+        </Button>
       </div>
     </main>
   );
