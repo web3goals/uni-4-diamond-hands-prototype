@@ -12,6 +12,7 @@ public struct Quiz<phantom T> has key, store {
     description: string::String,
     url: Url,
     balance: Balance<T>,
+    reward_amount: u64, // Amount to reward users who pass the quiz
 }
 
 // ===== Events =====
@@ -21,6 +22,7 @@ public struct QuizMinted<phantom T> has copy, drop {
     creator: address,
     name: string::String,
     amount: u64,
+    reward_amount: u64,
 }
 
 // ===== Public view functions =====
@@ -41,6 +43,10 @@ public fun balance<T>(quiz: &Quiz<T>): &Balance<T> {
     &quiz.balance
 }
 
+public fun reward_amount<T>(quiz: &Quiz<T>): u64 {
+    quiz.reward_amount
+}
+
 // ===== Entrypoints =====
 
 #[allow(lint(self_transfer))]
@@ -49,6 +55,7 @@ public fun mint_to_sender<T>(
     description: vector<u8>,
     url: vector<u8>,
     payment: Coin<T>,
+    reward_amount: u64,
     ctx: &mut TxContext,
 ) {
     let sender = tx_context::sender(ctx);
@@ -61,6 +68,7 @@ public fun mint_to_sender<T>(
         description: string::utf8(description),
         url: url::new_unsafe_from_bytes(url),
         balance: payment_balance,
+        reward_amount,
     };
 
     event::emit(QuizMinted<T> {
@@ -68,6 +76,7 @@ public fun mint_to_sender<T>(
         creator: sender,
         name: quiz.name,
         amount: payment_value,
+        reward_amount,
     });
 
     transfer::public_transfer(quiz, sender);
@@ -87,7 +96,7 @@ public fun update_description<T>(
 
 #[allow(lint(self_transfer))]
 public fun burn<T>(quiz: Quiz<T>, ctx: &mut TxContext) {
-    let Quiz { id, name: _, description: _, url: _, balance } = quiz;
+    let Quiz { id, name: _, description: _, url: _, balance, reward_amount: _ } = quiz;
     // If there are coins in the balance, we should return them to the transaction sender
     if (balance::value(&balance) > 0) {
         let sender = tx_context::sender(ctx);
@@ -117,19 +126,19 @@ fun test_mint_to_sender() {
     let name = b"Test Quiz";
     let description = b"This is a test quiz";
     let url_bytes = b"https://example.com/test.png";
-    let payment_amount = 1000;
-
-    // Execute the mint_to_sender function
+    let payment_amount = 1000; // Execute the mint_to_sender function
     test_scenario::next_tx(scenario, admin);
     {
         // Create a test coin to use as payment
         let test_coin = coin::mint_for_testing<SUI>(payment_amount, test_scenario::ctx(scenario));
+        let reward_amount = 100; // Define reward amount for test
 
         mint_to_sender<SUI>(
             name,
             description,
             url_bytes,
             test_coin,
+            reward_amount,
             test_scenario::ctx(scenario),
         );
     };
@@ -145,6 +154,8 @@ fun test_mint_to_sender() {
         assert!(std::string::as_bytes(description(&quiz)) == description, 1);
         // Verify the balance is correct
         assert!(balance::value(balance(&quiz)) == payment_amount, 2);
+        // Verify the reward amount is correct
+        assert!(reward_amount(&quiz) == 100, 3);
         // We'll skip URL verification since url::inner_url() returns a type incompatible with vector<u8>
 
         // Return the quiz to the object pool
