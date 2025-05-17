@@ -172,11 +172,12 @@ fun test_mint_to_sender() {
     let description = b"This is a test quiz";
     let url_bytes = b"https://example.com/test.png";
     let payment_amount = 1000; // Execute the mint_to_sender function
+    let reward_amount = 100; // Define reward amount for test
+
     test_scenario::next_tx(scenario, admin);
     {
         // Create a test coin to use as payment
         let test_coin = coin::mint_for_testing<SUI>(payment_amount, test_scenario::ctx(scenario));
-        let reward_amount = 100; // Define reward amount for test
 
         mint_to_sender<SUI>(
             name,
@@ -243,7 +244,9 @@ fun test_pass() {
             reward_amount,
             test_scenario::ctx(scenario),
         );
-    }; // User passes the quiz
+    };
+
+    // User passes the quiz
     test_scenario::next_tx(scenario, admin);
     {
         let mut quiz = test_scenario::take_from_sender<Quiz<SUI>>(scenario);
