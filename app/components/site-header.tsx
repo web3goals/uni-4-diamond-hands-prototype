@@ -1,6 +1,7 @@
 "use client";
 
 import { siteConfig } from "@/config/site";
+import { ConnectButton } from "@mysten/dapp-kit";
 import { GithubIcon, HomeIcon, MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,11 +32,14 @@ export function SiteHeader() {
                 className="w-full rounded-xl"
               />
             </div>
-            <span className="text-foreground font-bold">{siteConfig.name}</span>
+            <span className="hidden md:inline-block font-bold">
+              {siteConfig.name}
+            </span>
           </Link>
         </div>
         {/* Right part */}
         <div className="flex flex-1 items-center justify-end gap-4">
+          <ConnectButton />
           <DropdownMenu>
             <DropdownMenuTrigger
               className="text-sm font-medium text-muted-foreground"

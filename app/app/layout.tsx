@@ -1,11 +1,13 @@
 import { DevIndicator } from "@/components/dev-indicator";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import SuiProvider from "@/components/sui-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
+import "@mysten/dapp-kit/dist/index.css";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -57,12 +59,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex flex-col min-h-screen">
-            <SiteHeader />
-            <div className="flex-1">{children}</div>
-            <SiteFooter />
-            <Toaster />
-          </div>
+          <SuiProvider>
+            <div className="relative flex flex-col min-h-screen">
+              <SiteHeader />
+              <div className="flex-1">{children}</div>
+              <SiteFooter />
+              <Toaster />
+            </div>
+          </SuiProvider>
           <DevIndicator />
         </ThemeProvider>
       </body>
