@@ -6,32 +6,44 @@
 - Build project - `sui move build`
 - Run tests - `sui move test`
 - Publish package - `sui client publish ./sources/uni.move`
-- Interact with package:
+- Read object values - `sui client object 0x5bfc2ed0dbd51172c6041706564b1b6c1bfc0abb4a7902f9d8cc1d32b9e750e8`
 
-```bash
-sui client ptb \
---assign forge @0x88ffbd24069fefb561b2b773796b97ff3b59cc20ee6a49e8def88d2117d7cfc4 \
---assign to_address @0x9996eab084254d178e962057fa5358b0cd0ac898d1c8a056a5f07dd7aaec0b84 \
---move-call 0xcb7d30a11bb0b9a4c2b3b8881da01d7c743c7427d4dabff9760f263a8723e308::example::sword_create 3 3 \
---assign sword \
---transfer-objects "[sword]" to_address \
---gas-budget 20000000
-```
+### Extra commands
+
+**Mint UNI:**
 
 ```bash
 sui client call \
---package 0xcb7d30a11bb0b9a4c2b3b8881da01d7c743c7427d4dabff9760f263a8723e308 \
---module example \
---function magic \
---args 0x5bfc2ed0dbd51172c6041706564b1b6c1bfc0abb4a7902f9d8cc1d32b9e750e8
-```
-
-```bash
-sui client call \
---package 0x63d19c77dcff25d1dcd185a17687bc68c243e00f9b083c22ba3c6aa4cc9f595a \
+--package 0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54 \
 --module uni \
 --function mint \
---args 0xfbf67ca678f07fe2490df7ea1ca132f585716230f3cda066fe4f782060923c3a 1000000 0x9996eab084254d178e962057fa5358b0cd0ac898d1c8a056a5f07dd7aaec0b84
+--args 0x79f6cc83d50c34bd4b49b8ea57092b9fd719a22c0f517a2ee84b6c3766db1470 1000000000 0x90bbf7799fe30efda0e7c1a9f7bdc05a8e8ecfac69f4d4445f34ef26269e7baa
 ```
 
-- Read object values - `sui client object 0x5bfc2ed0dbd51172c6041706564b1b6c1bfc0abb4a7902f9d8cc1d32b9e750e8`
+**Split UNI coins:**
+
+```bash
+sui client split-coin --coin-id 0x5e6b944fb0a9c2ce77c0d1692678b80279314646c80106327839aa4b8f93cc63 --amounts 10000000
+```
+
+**Mint quiz:**
+
+```bash
+sui client call \
+--package 0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54 \
+--module quiz \
+--function mint_to_sender \
+--args "Quiz 1" "Quiz 1 Description" "ipfs://quiz_1" 0xc7114d53bd596f8795040221c9f9ba629a164d75bd901b194e723d6f2ef23653 1000000 \
+--type-args 0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::uni::UNI
+```
+
+**Pass quiz:**
+
+```bash
+sui client call \
+--package 0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54 \
+--module quiz \
+--function pass \
+--args 0x7e72569f6d877c7e20b7c1eb913bca098c28370941c51ff384128da2d6fd06ea 0xd0c8b608b55422117267cc6e3616803dcf7ab33488a89e5433ddd7f77b5180df  \
+--type-args 0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::uni::UNI
+```
