@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { chainConfig } from "@/config/chain";
 import useError from "@/hooks/use-error";
+import { QuizMetadata } from "@/types/quiz-metadata";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useCurrentAccount,
@@ -19,6 +20,7 @@ import {
   useSuiClient,
 } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
+import axios from "axios";
 import { ArrowRightIcon, Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -149,15 +151,27 @@ export function NewQuizCreationSection(props: {
       console.log("Minting quiz...");
       setIsProsessing(true);
 
-      // Upload data to IPFS
-      // TODO: Implement
+      // Upload metadata to IPFS
       console.log("Uploading data to IPFS...");
-      const name = `${values.projectTitle} Quiz`;
-      const description = `Pass the quiz about ${values.projectTitle} and get ${
-        values.passReward / 1_000_000
-      } UNI coins if all answers are correct`;
-      const ipfsUrl = "ipfs://42";
-      console.log("IPFS URL: ", ipfsUrl);
+      const metadata: QuizMetadata = {
+        name: `${values.projectTitle} Quiz`,
+        description: `Pass the quiz about ${values.projectTitle} and get ${
+          values.passReward / 1_000_000
+        } UNI coins if all answers are correct`,
+        created: Date.now(),
+        projectTitle: values.projectTitle,
+        projectLinks: values.projectLinks.split("\n"),
+        projectCoin: values.projectCoin,
+        minProjectCoins: values.minProjectCoins,
+        passReward: values.passReward,
+        holdReward: values.holdReward,
+        budget: values.budget,
+      };
+      const { data } = await axios.post("/api/ipfs", {
+        data: JSON.stringify(metadata),
+      });
+      const metadataUrl = data.data;
+      console.log("Metadata URL: ", metadataUrl);
 
       // Mint quiz
       console.log("Minting quiz...");
@@ -165,9 +179,9 @@ export function NewQuizCreationSection(props: {
       transaction.moveCall({
         target: chainConfig.quizMintFunctionTarget,
         arguments: [
-          transaction.pure.string(name),
-          transaction.pure.string(description),
-          transaction.pure.string(ipfsUrl),
+          transaction.pure.string(metadata.name),
+          transaction.pure.string(metadata.description),
+          transaction.pure.string(metadataUrl),
           transaction.object(uniCoinsObjectId),
           transaction.pure.u64(values.passReward),
         ],
