@@ -2,7 +2,13 @@
 
 import { siteConfig } from "@/config/site";
 import { ConnectButton } from "@mysten/dapp-kit";
-import { GithubIcon, HomeIcon, MenuIcon } from "lucide-react";
+import {
+  AlignJustifyIcon,
+  GithubIcon,
+  HomeIcon,
+  MenuIcon,
+  PlusIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -54,6 +60,18 @@ export function SiteHeader() {
                 <DropdownMenuItem>
                   <HomeIcon />
                   <span>Home</span>
+                </DropdownMenuItem>
+              </Link>
+              <Link href="/quizzes">
+                <DropdownMenuItem>
+                  <AlignJustifyIcon />
+                  <span>Quizzes</span>
+                </DropdownMenuItem>
+              </Link>
+              <Link href="/quizzes/new">
+                <DropdownMenuItem>
+                  <PlusIcon />
+                  <span>New quiz</span>
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
