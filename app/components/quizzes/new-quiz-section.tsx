@@ -3,11 +3,11 @@ import { NewQuizCreatedSection } from "./new-quiz-created-section";
 import { NewQuizCreationSection } from "./new-quiz-creation-section";
 
 export function NewQuizSection() {
-  const [quiz, setQuiz] = useState<unknown | undefined>(undefined);
+  const [quizId, setQuizId] = useState<string | undefined>(undefined);
 
-  if (quiz) {
-    return <NewQuizCreatedSection quiz={quiz} />;
+  if (quizId) {
+    return <NewQuizCreatedSection quizId={quizId} />;
   }
 
-  return <NewQuizCreationSection onCreated={(quiz) => setQuiz(quiz)} />;
+  return <NewQuizCreationSection onCreated={(quizId) => setQuizId(quizId)} />;
 }

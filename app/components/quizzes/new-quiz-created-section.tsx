@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import Confetti from "react-confetti";
 
-export function NewQuizCreatedSection(props: { quiz: unknown }) {
+export function NewQuizCreatedSection(props: { quizId: string }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -32,7 +32,7 @@ export function NewQuizCreatedSection(props: { quiz: unknown }) {
           supporters
         </p>
         <div className="flex flex-row gap-2 mt-4">
-          <Link href={`/quizzes/${props.quiz}`}>
+          <Link href={`/quizzes/${props.quizId}`}>
             <Button>
               <PlusIcon /> Open quiz
             </Button>

@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export function NewQuizCreationSection(props: {
-  onCreated: (quiz: unknown) => void;
+  onCreated: (quizId: string) => void;
 }) {
   const { handleError } = useError();
   const [isProsessing, setIsProsessing] = useState(false);
@@ -52,7 +52,9 @@ export function NewQuizCreationSection(props: {
     try {
       setIsProsessing(true);
 
-      props.onCreated("42");
+      props.onCreated(
+        "0x7e72569f6d877c7e20b7c1eb913bca098c28370941c51ff384128da2d6fd06ea"
+      );
     } catch (error) {
       handleError(error, "Failed to submit the form, try again later");
     } finally {
