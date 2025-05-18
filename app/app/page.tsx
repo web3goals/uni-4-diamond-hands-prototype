@@ -19,11 +19,11 @@ export default function HomePage() {
       </div>
       <div className="max-w-md">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter">
-          Quiz, Win, HODL: Turn Token Holders into Diamond Hands!
+          Quiz, Win, HODL: Turn Coin Holders into Diamond Hands!
         </h1>
         <p className="font-medium tracking-tight text-muted-foreground mt-2">
           A UNI-powered platform to create quizzes that turn your project&apos;s
-          token holders into diamond-handed supporters
+          coin holders into diamond-handed supporters
         </p>
         <div className="flex flex-row gap-2 mt-4">
           <Link href="/quizzes/new">
