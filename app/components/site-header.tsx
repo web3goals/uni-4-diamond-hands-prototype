@@ -4,6 +4,7 @@ import { siteConfig } from "@/config/site";
 import { ConnectButton } from "@mysten/dapp-kit";
 import {
   AlignJustifyIcon,
+  DropletsIcon,
   GithubIcon,
   HomeIcon,
   MenuIcon,
@@ -72,6 +73,13 @@ export function SiteHeader() {
                 <DropdownMenuItem>
                   <PlusIcon />
                   <span>New quiz</span>
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuSeparator />
+              <Link href="/faucets/uni">
+                <DropdownMenuItem>
+                  <DropletsIcon />
+                  <span>UNI Faucet</span>
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
