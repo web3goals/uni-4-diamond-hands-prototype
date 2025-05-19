@@ -1,23 +1,40 @@
+import { chainConfig } from "@/config/chain";
 import useError from "@/hooks/use-error";
 import { QuizQuestion } from "@/types/quiz-question";
+import {
+  useCurrentAccount,
+  useSignAndExecuteTransaction,
+} from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
 import { ArrowRightIcon, DrumIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
 export function QuizResultGetSection(props: {
+  id: string;
   questions: QuizQuestion[];
   answers: string[];
   onSuccess: (txBlock: string) => void;
   onFail: () => void;
 }) {
   const { handleError } = useError();
+  const account = useCurrentAccount();
   const [isProsessing, setIsProsessing] = useState(false);
+
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
 
   async function handleGetResult() {
     try {
       console.log("Getting result...");
       setIsProsessing(true);
+
+      if (!account) {
+        toast.error("Please connect your wallet");
+        setIsProsessing(false);
+        return;
+      }
 
       // Check if answers are correct
       const success = props.questions.every(
@@ -25,13 +42,32 @@ export function QuizResultGetSection(props: {
       );
       console.log("Quiz result:", success ? "Success" : "Fail");
 
+      // If the quiz is passed, call the contract to pass the quiz
       if (success) {
-        // Send pass request to module
-        // TODO:
-        const txBlock = "6crLYNsJTDW6b5gNKT8kjCV7RC62L3zqPHn7kdKFUyJk";
-
-        props.onSuccess(txBlock);
-      } else {
+        const transaction = new Transaction();
+        transaction.moveCall({
+          target: chainConfig.quizPassFunctionTarget,
+          arguments: [
+            transaction.object(props.id),
+            transaction.pure.address(account.address),
+          ],
+          typeArguments: [chainConfig.uniCoinType],
+        });
+        transaction.setGasBudget(5_000_000);
+        signAndExecuteTransaction(
+          { transaction },
+          {
+            onSuccess: (result) => {
+              console.log("Transaction result:", result);
+              props.onSuccess(result.digest);
+            },
+            onError: (error) =>
+              handleError(error, "Failed to submit the form, try again later"),
+          }
+        );
+      }
+      // If the quiz is failed, call the onFail function
+      else {
         props.onFail();
       }
     } catch (error) {

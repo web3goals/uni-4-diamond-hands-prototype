@@ -6,4 +6,5 @@ export const chainConfig = {
   uniCoinObjectType: `0x2::coin::Coin<${PACKAGE}::uni::UNI>`,
   quizObjectType: `${PACKAGE}::quiz::Quiz<${PACKAGE}::uni::UNI>`,
   quizMintFunctionTarget: `${PACKAGE}::quiz::mint_to_sender`,
+  quizPassFunctionTarget: `${PACKAGE}::quiz::pass`,
 };

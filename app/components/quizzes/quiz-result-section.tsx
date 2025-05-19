@@ -6,6 +6,7 @@ import { QuizResultSuccessSection } from "./quiz-result-success-section";
 import { QuizMetadata } from "@/types/quiz-metadata";
 
 export function QuizResultSection(props: {
+  id: string;
   metadata: QuizMetadata;
   questions: QuizQuestion[];
   answers: string[];
@@ -29,6 +30,7 @@ export function QuizResultSection(props: {
 
   return (
     <QuizResultGetSection
+      id={props.id}
       questions={props.questions}
       answers={props.answers}
       onSuccess={(tx) => setSuccessTxBlock(tx)}

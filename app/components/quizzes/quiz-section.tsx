@@ -14,6 +14,7 @@ export function QuizSection(props: { id: string }) {
   if (metadata && questions && answers) {
     return (
       <QuizResultSection
+        id={props.id}
         metadata={metadata}
         questions={questions}
         answers={answers}
