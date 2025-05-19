@@ -5,7 +5,7 @@
 - Run WSL - `wsl`
 - Build project - `sui move build`
 - Run tests - `sui move test`
-- Publish package - `sui client publish ./sources/uni.move`
+- Publish package - `sui client publish`
 - Read object values - `sui client object 0x5bfc2ed0dbd51172c6041706564b1b6c1bfc0abb4a7902f9d8cc1d32b9e750e8`
 
 ### Extra commands
