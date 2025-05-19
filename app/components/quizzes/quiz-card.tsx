@@ -27,6 +27,7 @@ export function QuizCard(props: { id: string }) {
   const client = useSuiClient();
   const [balance, setBalance] = useState<string | undefined>();
   const [metadata, setMetadata] = useState<QuizMetadata | undefined>();
+  const [passedUsers, setPassedUsers] = useState<string[]>([]);
 
   async function loadQuiz() {
     try {
@@ -37,23 +38,48 @@ export function QuizCard(props: { id: string }) {
           showContent: true,
         },
       });
-      let quizBalance;
-      let quizObjectUrl;
+      let quizBalance: string | undefined;
+      let quizPassedUsers: string[] = [];
+      let quizObjectUrl: string | undefined;
       if (quizObject.data?.content?.dataType === "moveObject") {
         const fields = quizObject.data.content.fields;
+        // Extract balance from the balance field
         quizBalance =
           typeof fields === "object" && "balance" in fields
             ? (fields.balance as string)
             : undefined;
+        // Extract passed users from the passed_users field
+        if (typeof fields === "object" && "passed_users" in fields) {
+          const passedUsersMap = fields.passed_users as {
+            fields?: {
+              contents?: Array<{
+                fields?: {
+                  key?: string;
+                  value?: boolean;
+                };
+                type?: string;
+              }>;
+            };
+            type?: string;
+          };
+          if (passedUsersMap?.fields?.contents) {
+            quizPassedUsers = passedUsersMap.fields.contents
+              .filter((entry) => entry?.fields?.value === true)
+              .map((entry) => entry?.fields?.key || "")
+              .filter((address) => address !== "");
+          }
+        }
+        // Extract quiz object URL from the url field
         quizObjectUrl =
           typeof fields === "object" && "url" in fields
             ? (fields.url as string)
             : undefined;
       }
-      if (!quizBalance || !quizObjectUrl) {
+      if (!quizBalance || !quizPassedUsers || !quizObjectUrl) {
         throw new Error("Quiz data not found");
       }
       setBalance(quizBalance);
+      setPassedUsers(quizPassedUsers);
 
       console.log("Loading quiz metadata...");
       const { data } = await axios.get(ipfsToHttp(quizObjectUrl));
@@ -207,8 +233,23 @@ export function QuizCard(props: { id: string }) {
             </div>
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">Passed users</p>
-              {/* TODO: Display real data */}
-              <p className="text-sm">Unknown</p>
+              {passedUsers.length === 0 ? (
+                <p className="text-sm">No users</p>
+              ) : (
+                <div className="flex flex-col gap-1">
+                  {passedUsers.map((user, index) => (
+                    <Link
+                      key={index}
+                      href={`https://testnet.suivision.xyz/account/${user}`}
+                      target="_blank"
+                    >
+                      <p className="text-sm underline underline-offset-4 break-all">
+                        {user}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           {/* Holders over 30 days */}
@@ -221,7 +262,7 @@ export function QuizCard(props: { id: string }) {
                 Holders over 30 days
               </p>
               {/* TODO: Display real data */}
-              <p className="text-sm">Unknown</p>
+              <p className="text-sm">No holders</p>
             </div>
           </div>
         </div>
