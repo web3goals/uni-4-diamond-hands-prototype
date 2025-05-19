@@ -40,7 +40,6 @@ export function QuizResultGetSection(props: {
       const success = props.questions.every(
         (question, index) => question.answer === props.answers[index]
       );
-      console.log("Quiz result:", success ? "Success" : "Fail");
 
       // If the quiz is passed, call the contract to pass the quiz
       if (success) {
@@ -57,10 +56,7 @@ export function QuizResultGetSection(props: {
         signAndExecuteTransaction(
           { transaction },
           {
-            onSuccess: (result) => {
-              console.log("Transaction result:", result);
-              props.onSuccess(result.digest);
-            },
+            onSuccess: (result) => props.onSuccess(result.digest),
             onError: (error) =>
               handleError(error, "Failed to submit the form, try again later"),
           }
