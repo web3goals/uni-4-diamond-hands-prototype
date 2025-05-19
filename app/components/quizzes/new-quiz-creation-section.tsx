@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { chainConfig } from "@/config/chain";
+import { demoConfig } from "@/config/demo";
 import useError from "@/hooks/use-error";
 import { QuizMetadata } from "@/types/quiz-metadata";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,15 +63,13 @@ export function NewQuizCreationSection(props: {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      projectTitle: "NAVI Protocol",
-      projectLinks:
-        "https://naviprotocol.io/\nhttps://naviprotocol.gitbook.io/navi-protocol-docs/dao-and-token/2025-roadmap\nhttps://medium.com/@navi.protocol/navi-protocol-q1-2025-recap-cde6a2c0b374",
-      projectCoin:
-        "0x3b1b22dc5f3978a08673a5665199e86706d24ffbe428801ecc0c3c9d1cf41c54::navx::NAVX",
-      minProjectCoins: 1 * 1000000,
-      passReward: 0.01 * 1000000,
-      holdReward: 0.02 * 1000000,
-      budget: 0.1 * 1000000,
+      projectTitle: demoConfig.projectTitle,
+      projectLinks: demoConfig.projectLinks,
+      projectCoin: demoConfig.projectCoin,
+      minProjectCoins: demoConfig.minProjectCoins,
+      passReward: demoConfig.passReward,
+      holdReward: demoConfig.holdReward,
+      budget: demoConfig.budget,
     },
   });
 
@@ -241,7 +240,7 @@ export function NewQuizCreationSection(props: {
                 <FormLabel>Project title *</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="NAVI Protocol"
+                    placeholder={demoConfig.projectTitle}
                     disabled={isProsessing}
                     {...field}
                   />
@@ -258,7 +257,7 @@ export function NewQuizCreationSection(props: {
                 <FormLabel>Project links *</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="https://naviprotocol.io/"
+                    placeholder={demoConfig.projectLinks}
                     disabled={isProsessing}
                     {...field}
                   />
