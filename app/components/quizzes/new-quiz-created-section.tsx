@@ -14,8 +14,8 @@ export function NewQuizCreatedSection(props: { quizId: string }) {
     <main className="container mx-auto min-h-[80vh] flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 px-4 py-4">
       <div className="max-w-xl">
         <Image
-          src="/images/cover.png"
-          alt="Cover"
+          src="/images/created.png"
+          alt="Created"
           priority={false}
           width="100"
           height="100"
