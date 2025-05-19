@@ -59,7 +59,6 @@ export function NewQuizCreationSection(props: {
     budget: z.number(),
   });
 
-  // TODO: Clear default values for production
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
