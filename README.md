@@ -6,7 +6,25 @@ A UNI-powered platform to create quizzes that turn your project's coin holders i
 
 ## 🛠️ How it works
 
-...
+### 🎮 Creating a quiz
+
+1. **Connect & Configure**: Developers connect their Sui wallet and fill out a form with project details (website links, coin address), quiz parameters (minimum coin requirement), and rewards (UNI coins for passing and for holding 30+ days).
+2. **Deploy & Mint**: After approving a transaction to transfer UNI coins to the Quiz module, the app uploads metadata to IPFS and mints a Quiz NFT.
+3. **Track & Promote**: Developers receive a shareable quiz link and can monitor participation, rewards distribution, and holder loyalty through a dashboard. The link can be used in swap interfaces or during bearish sentiment to encourage holding.
+
+### 🧩 Passing a quiz
+
+1. **Connect & Verify**: Users connect their Sui wallet, which verifies they hold the minimum required project coins and haven't received rewards before.
+2. **Learn & Answer**: The app generates a unique quiz using AI and scraped project data, designed to highlight the project's potential and encourage holding.
+3. **Earn & Hold**: Successful quiz takers receive immediate UNI rewards and are incentivized with additional UNI rewards if they hold their project coins for 30 days.
+
+### 🚰 Getting test tokens
+
+- Users can mint UNI and NAVX test tokens via dedicated faucet pages on the platform for testing purposes.
+
+### ⏱️ Loyalty rewards
+
+- After 30 days, the app automatically identifies eligible users who've maintained their holdings, verifies they haven't received extra rewards yet, and distributes additional UNI coins through the Quiz module.
 
 ## 🔗 Artifacts
 
