@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export async function scrapeLinks(links: string[]): Promise<string[]> {
-  const data: string[] = [];
+  const scrapedData: string[] = [];
   for (const link of links) {
     const scrapeLink =
       `https://api.scraperapi.com/` +
@@ -9,7 +9,7 @@ export async function scrapeLinks(links: string[]): Promise<string[]> {
       `&url=${encodeURIComponent(link)}` +
       `&output_format=markdown`;
     const { data } = await axios.get(scrapeLink);
-    data.push(data);
+    scrapedData.push(data);
   }
-  return data;
+  return scrapedData;
 }
