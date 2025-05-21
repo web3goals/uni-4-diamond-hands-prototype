@@ -11,6 +11,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export function QuizStartSection(props: {
+  passedUsers: string[];
   metadata: QuizMetadata;
   onStart: (questions: QuizQuestion[]) => void;
 }) {
@@ -31,7 +32,11 @@ export function QuizStartSection(props: {
       }
 
       // Check if user has already passed the quiz
-      // TODO:
+      if (props.passedUsers.includes(account.address)) {
+        toast.error("You have already passed the quiz");
+        setIsProsessing(false);
+        return;
+      }
 
       // Check if user holds enough project coins
       const balance = await client.getBalance({

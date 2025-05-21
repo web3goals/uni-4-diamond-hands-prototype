@@ -7,6 +7,7 @@ import { QuizResultSection } from "./quiz-result-section";
 import { QuizQuestion } from "@/types/quiz-question";
 
 export function QuizSection(props: { id: string }) {
+  const [passedUsers, setPassedUsers] = useState<string[] | undefined>();
   const [metadata, setMetadata] = useState<QuizMetadata | undefined>();
   const [questions, setQuestions] = useState<QuizQuestion[] | undefined>();
   const [answers, setAnswers] = useState<string[] | undefined>();
@@ -36,9 +37,10 @@ export function QuizSection(props: { id: string }) {
     );
   }
 
-  if (metadata) {
+  if (passedUsers && metadata) {
     return (
       <QuizStartSection
+        passedUsers={passedUsers}
         metadata={metadata}
         onStart={(questions) => setQuestions(questions)}
       />
@@ -48,7 +50,10 @@ export function QuizSection(props: { id: string }) {
   return (
     <QuizLoaderSection
       id={props.id}
-      onLoaded={(metadata) => setMetadata(metadata)}
+      onLoaded={(passedUsers, metadata) => {
+        setPassedUsers(passedUsers);
+        setMetadata(metadata);
+      }}
     />
   );
 }

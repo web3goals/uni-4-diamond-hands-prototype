@@ -8,7 +8,7 @@ import { useSuiClient } from "@mysten/dapp-kit";
 
 export function QuizLoaderSection(props: {
   id: string;
-  onLoaded: (metadata: QuizMetadata) => void;
+  onLoaded: (passedUsers: string[], metadata: QuizMetadata) => void;
 }) {
   const { handleError } = useError();
   const client = useSuiClient();
@@ -22,21 +22,44 @@ export function QuizLoaderSection(props: {
           showContent: true,
         },
       });
-      let quizObjectUrl;
+      let quizPassedUsers: string[] = [];
+      let quizObjectUrl: string | undefined;
       if (quizObject.data?.content?.dataType === "moveObject") {
         const fields = quizObject.data.content.fields;
+        // Extract passed users from the passed_users field
+        if (typeof fields === "object" && "passed_users" in fields) {
+          const passedUsersMap = fields.passed_users as {
+            fields?: {
+              contents?: Array<{
+                fields?: {
+                  key?: string;
+                  value?: boolean;
+                };
+                type?: string;
+              }>;
+            };
+            type?: string;
+          };
+          if (passedUsersMap?.fields?.contents) {
+            quizPassedUsers = passedUsersMap.fields.contents
+              .filter((entry) => entry?.fields?.value === true)
+              .map((entry) => entry?.fields?.key || "")
+              .filter((address) => address !== "");
+          }
+        }
+        // Extract quiz object URL from the url field
         quizObjectUrl =
           typeof fields === "object" && "url" in fields
             ? (fields.url as string)
             : undefined;
       }
-      if (!quizObjectUrl) {
-        throw new Error("Quiz object URL not found");
+      if (!quizPassedUsers || !quizObjectUrl) {
+        throw new Error("Quiz data not found");
       }
 
       console.log("Loading quiz metadata...");
       const { data } = await axios.get(ipfsToHttp(quizObjectUrl));
-      props.onLoaded(data);
+      props.onLoaded(quizPassedUsers, data);
     } catch (error) {
       handleError(error, "Failed to load quiz, please try again");
     }
