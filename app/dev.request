@@ -1,0 +1,21 @@
+POST http://127.0.0.1:3000/api/quiz HTTP/1.1
+content-type: application/json
+
+{
+    "projectLinks": [
+        "https://medium.com/@navi.protocol/navi-protocol-q1-2025-recap-cde6a2c0b374"
+    ]
+}
+
+###
+
+POST http://127.0.0.1:3000/api/quiz HTTP/1.1
+content-type: application/json
+
+{
+    "projectLinks": [
+        "https://naviprotocol.io/",
+        "https://naviprotocol.gitbook.io/navi-protocol-docs/dao-and-token/2025-roadmap",
+        "https://medium.com/@navi.protocol/navi-protocol-q1-2025-recap-cde6a2c0b374"
+    ]
+}
