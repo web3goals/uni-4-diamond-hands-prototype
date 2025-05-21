@@ -261,7 +261,6 @@ export function QuizCard(props: { id: string }) {
               <p className="text-sm text-muted-foreground">
                 Holders over 30 days
               </p>
-              {/* TODO: Display real data */}
               <p className="text-sm">No holders</p>
             </div>
           </div>
