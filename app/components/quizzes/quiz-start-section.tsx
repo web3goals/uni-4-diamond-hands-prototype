@@ -1,17 +1,22 @@
 import { Button } from "@/components/ui/button";
+import { chainConfig } from "@/config/chain";
 import useError from "@/hooks/use-error";
 import { QuizMetadata } from "@/types/quiz-metadata";
 import { QuizQuestion } from "@/types/quiz-question";
+import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import axios from "axios";
 import { ArrowRightIcon, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function QuizStartSection(props: {
   metadata: QuizMetadata;
   onStart: (questions: QuizQuestion[]) => void;
 }) {
   const { handleError } = useError();
+  const client = useSuiClient();
+  const account = useCurrentAccount();
   const [isProsessing, setIsProsessing] = useState(false);
 
   async function handleStartQuiz() {
@@ -19,11 +24,31 @@ export function QuizStartSection(props: {
       console.log("Starting quiz...");
       setIsProsessing(true);
 
+      if (!account) {
+        toast.error("Please connect your wallet");
+        setIsProsessing(false);
+        return;
+      }
+
       // Check if user has already passed the quiz
       // TODO:
 
-      // Check if user has enough project coins
-      // TODO:
+      // Check if user holds enough project coins
+      const balance = await client.getBalance({
+        owner: account.address,
+        coinType: chainConfig.navxCoinType,
+      });
+      if (
+        BigInt(balance.totalBalance) < BigInt(props.metadata.minProjectCoins)
+      ) {
+        toast.error(
+          `You need to hold at least ${
+            props.metadata.minProjectCoins / 1_000_000
+          } ${props.metadata.projectCoin.split("::").at(-1)} to start the quiz`
+        );
+        setIsProsessing(false);
+        return;
+      }
 
       // Generate questions for the quiz
       const { data } = await axios.post("/api/quiz", {
