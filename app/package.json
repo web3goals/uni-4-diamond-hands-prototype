@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
+    "@langchain/core": "^0.3.56",
+    "@langchain/google-genai": "^0.2.9",
     "@mysten/dapp-kit": "^0.16.3",
     "@mysten/sui": "^1.29.1",
     "@radix-ui/react-dropdown-menu": "^2.1.14",

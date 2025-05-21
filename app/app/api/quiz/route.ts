@@ -1,6 +1,6 @@
-import { demoConfig } from "@/config/demo";
 import { createFailedApiResponse, createSuccessApiResponse } from "@/lib/api";
 import { errorToString } from "@/lib/converters";
+import { generateLlmProjectQuizQuestions } from "@/lib/llm";
 import { scrapeLinks } from "@/lib/scrapper";
 import { NextRequest } from "next/server";
 import { z } from "zod";
@@ -29,8 +29,7 @@ export async function POST(request: NextRequest) {
     const projectData = await scrapeLinks(bodyParseResult.data.projectLinks);
 
     // Generate questions using LLM
-    // TODO:
-    const questions = demoConfig.questions;
+    const questions = await generateLlmProjectQuizQuestions(projectData);
 
     // Return questions
     return createSuccessApiResponse(questions);

@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { demoConfig } from "@/config/demo";
 import useError from "@/hooks/use-error";
 import { QuizMetadata } from "@/types/quiz-metadata";
 import { QuizQuestion } from "@/types/quiz-question";
+import axios from "axios";
 import { ArrowRightIcon, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -25,14 +25,18 @@ export function QuizStartSection(props: {
       // Check if user has enough project coins
       // TODO:
 
-      // Load project links
-      // TODO:
+      // Generate questions for the quiz
+      const { data } = await axios.post("/api/quiz", {
+        projectLinks: props.metadata.projectLinks,
+      });
+      if (!data.success) {
+        throw new Error(
+          `Failed to generate quiz questions: ${JSON.stringify(data)}`
+        );
+      }
+      console.log("Quiz questions:", data.data);
 
-      // Generate 3 questions
-      // TODO:
-      const questions = demoConfig.questions;
-
-      props.onStart(questions);
+      props.onStart(data.data);
     } catch (error) {
       handleError(error, "Failed to submit the form, try again later");
       setIsProsessing(false);
