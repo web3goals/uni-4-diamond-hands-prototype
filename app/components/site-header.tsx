@@ -82,6 +82,12 @@ export function SiteHeader() {
                   <span>UNI Faucet</span>
                 </DropdownMenuItem>
               </Link>
+              <Link href="/faucets/navx">
+                <DropdownMenuItem>
+                  <DropletsIcon />
+                  <span>NAVX Faucet</span>
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <Link href={siteConfig.links.github} target="_blank">
                 <DropdownMenuItem>
