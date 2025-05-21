@@ -32,7 +32,7 @@ export default function UniFaucetPage() {
   const [isProsessing, setIsProsessing] = useState(false);
 
   const formSchema = z.object({
-    amount: z.number(),
+    amount: z.coerce.number(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,9 +57,7 @@ export default function UniFaucetPage() {
       transaction.moveCall({
         target: chainConfig.uniCoinMintFunctionTarget,
         arguments: [
-          transaction.object(
-            "0x7edc3ccd78c6c45e18d276cb933339c9a3b2e1a55a8af03c96c3aac8df92948c"
-          ),
+          transaction.object(chainConfig.uniCoinTreasuryObject),
           transaction.pure.u64(values.amount),
         ],
       });

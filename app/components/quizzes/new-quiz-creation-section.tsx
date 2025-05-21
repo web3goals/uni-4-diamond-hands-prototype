@@ -53,10 +53,10 @@ export function NewQuizCreationSection(props: {
     projectTitle: z.string().min(1),
     projectLinks: z.string().min(1),
     projectCoin: z.string().min(1),
-    minProjectCoins: z.number(),
-    passReward: z.number(),
-    holdReward: z.number(),
-    budget: z.number(),
+    minProjectCoins: z.coerce.number(),
+    passReward: z.coerce.number(),
+    holdReward: z.coerce.number(),
+    budget: z.coerce.number(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
