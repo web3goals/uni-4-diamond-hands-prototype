@@ -46,10 +46,7 @@ export function QuizResultGetSection(props: {
         const transaction = new Transaction();
         transaction.moveCall({
           target: chainConfig.quizPassFunctionTarget,
-          arguments: [
-            transaction.object(props.id),
-            transaction.pure.address(account.address),
-          ],
+          arguments: [transaction.object(props.id)],
           typeArguments: [chainConfig.uniCoinType],
         });
         transaction.setGasBudget(5_000_000);

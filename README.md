@@ -29,10 +29,10 @@ A UNI-powered platform to create quizzes that turn your project's coin holders i
 ## 🔗 Artifacts
 
 - Application - [uni-4-diamond-hands.vercel.app](https://uni-4-diamond-hands.vercel.app/)
-- Demo quiz - [uni-4-diamond-hands.vercel.app/quizzes/0x389092bbf5dbcaa667617b8ae613dff6ce37f0672a30908b5e66ae24606d3d5c](https://uni-4-diamond-hands.vercel.app/quizzes/0x389092bbf5dbcaa667617b8ae613dff6ce37f0672a30908b5e66ae24606d3d5c)
+- Demo quiz - [uni-4-diamond-hands.vercel.app/quizzes/0xd24480aada0a9493098796e81e267368e2e5b16998714bc42c02d6a5bd5dcca2](https://uni-4-diamond-hands.vercel.app/quizzes/0xd24480aada0a9493098796e81e267368e2e5b16998714bc42c02d6a5bd5dcca2)
 - UNI faucet - [uni-4-diamond-hands.vercel.app/faucets/uni](https://uni-4-diamond-hands.vercel.app/faucets/uni)
 - NAVX faucet - [uni-4-diamond-hands.vercel.app/faucets/navx](https://uni-4-diamond-hands.vercel.app/faucets/navx)
-- Package (Sui Testnet) - [0x28d91e48b77943014a5ec4c4f29c9a7945548b996549052c59d0bbbf3bbac737](https://testnet.suivision.xyz/package/0x28d91e48b77943014a5ec4c4f29c9a7945548b996549052c59d0bbbf3bbac737)
+- Package (Sui Testnet) - [0x6d4353597f2f266457bedd5fc4c67c6b65083e85794e323065806831164f9008](https://testnet.suivision.xyz/package/0x6d4353597f2f266457bedd5fc4c67c6b65083e85794e323065806831164f9008)
 
 ## 🛠️ Technologies
 

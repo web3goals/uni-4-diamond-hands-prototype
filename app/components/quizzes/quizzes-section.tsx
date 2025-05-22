@@ -1,6 +1,8 @@
 import { chainConfig } from "@/config/chain";
 import useError from "@/hooks/use-error";
+import { bytesToHexString, stringToSubstrings } from "@/lib/converters";
 import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
+import { Transaction } from "@mysten/sui/transactions";
 import { AlignJustifyIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -13,28 +15,55 @@ export function QuizzesSection() {
   const { handleError } = useError();
   const client = useSuiClient();
   const account = useCurrentAccount();
-  const [quizIds, setQuizIds] = useState<string[]>([]);
+  const [quizIds, setQuizIds] = useState<string[] | undefined>();
+
+  async function loadQuizIds() {
+    try {
+      console.log("Loading quiz IDs...");
+      if (!account) {
+        console.log("No account found");
+        return;
+      }
+
+      // Prepare the transaction to call get_user_quizzes
+      const tx = new Transaction();
+      tx.moveCall({
+        target: chainConfig.quizGetUserQuizzesFunctionTarget,
+        arguments: [
+          tx.object(chainConfig.quizTrackedObject),
+          tx.pure.address(account.address),
+        ],
+      });
+
+      // Execute the transaction as a dev inspect to get the return value without changing state
+      const devInspectResult = await client.devInspectTransactionBlock({
+        transactionBlock: tx,
+        sender: account.address,
+      });
+
+      // Parse the dev inpect result
+      const devInspectResultValues =
+        devInspectResult.results?.[0]?.returnValues;
+      const devInspectResultHexString = bytesToHexString(
+        devInspectResultValues?.[0]?.[0] as number[]
+      );
+      const devInspectResultHexSubstrings = stringToSubstrings(
+        devInspectResultHexString,
+        64
+      );
+
+      // Extract the quiz IDs from the dev inspect result
+      const quizIds = devInspectResultHexSubstrings
+        .slice(1)
+        .map((substring) => `0x${substring}`);
+      setQuizIds(quizIds);
+    } catch (error) {
+      handleError(error, "Failed to load quizzes, try again later");
+    }
+  }
 
   useEffect(() => {
-    if (account) {
-      client
-        .getOwnedObjects({
-          owner: account.address,
-          filter: {
-            StructType: chainConfig.quizObjectType,
-          },
-        })
-        .then((data) =>
-          setQuizIds(
-            data.data
-              .map((item) => item.data?.objectId)
-              .filter((item) => item !== undefined)
-          )
-        )
-        .catch((error) =>
-          handleError(error, "Failed to load quizzes, try again later")
-        );
-    }
+    loadQuizIds();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 

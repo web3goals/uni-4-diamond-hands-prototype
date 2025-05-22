@@ -198,10 +198,11 @@ export function NewQuizCreationSection(props: {
           transaction.pure.string(metadataUrl),
           transaction.object(uniCoinsObjectId),
           transaction.pure.u64(values.passReward),
+          transaction.object(chainConfig.quizTrackedObject),
         ],
         typeArguments: [chainConfig.uniCoinType],
       });
-      transaction.setGasBudget(5_000_000);
+      transaction.setGasBudget(10_000_000);
       signAndExecuteTransaction(
         { transaction },
         {
