@@ -83,8 +83,8 @@ export function NewQuizCreationSection(props: {
         return;
       }
 
-      // Get the first UNI coin object
-      console.log("Getting UNI coin objects...");
+      // Get suitable UNI coin object for splitting
+      console.log("Getting suitable UNI coin object for splitting...");
       const uniCoinObjects = await client.getOwnedObjects({
         owner: account.address,
         filter: {
@@ -94,18 +94,34 @@ export function NewQuizCreationSection(props: {
           showContent: true,
         },
       });
-      const firstUniCoinObjectId = uniCoinObjects.data[0].data?.objectId;
-      if (!firstUniCoinObjectId) {
-        toast.error("First UNI coin object not found");
+      let suitableUniCoinObject;
+      // Find coin with balance equal or greater than budget
+      for (const uniCoinObject of uniCoinObjects.data) {
+        if (
+          uniCoinObject.data?.content &&
+          uniCoinObject.data.content.dataType === "moveObject" &&
+          "fields" in uniCoinObject.data.content &&
+          "balance" in uniCoinObject.data.content.fields
+        ) {
+          const balanceStr = String(uniCoinObject.data.content.fields.balance);
+          const balance = BigInt(balanceStr);
+          if (balance >= BigInt(values.budget)) {
+            suitableUniCoinObject = uniCoinObject.data.objectId;
+            break;
+          }
+        }
+      }
+      if (!suitableUniCoinObject) {
+        toast.error("Suitable UNI coin object not found");
         setIsProsessing(false);
         return;
       }
-      console.log("First UNI coin object ID: ", firstUniCoinObjectId);
+      console.log("Suitable UNI coin object ID: ", suitableUniCoinObject);
 
       // Split the first UNI coin object
       console.log("Splitting UNI coins...");
       const transaction = new Transaction();
-      const [coin] = transaction.splitCoins(firstUniCoinObjectId, [
+      const [coin] = transaction.splitCoins(suitableUniCoinObject, [
         values.budget,
       ]);
       transaction.transferObjects([coin], account.address);
